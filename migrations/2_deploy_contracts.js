@@ -1,9 +1,17 @@
 const ChiToken = artifacts.require("ChiToken");
 const ANC = artifacts.require("ANC");
+const Faucet = artifacts.require("Faucet");
 const Libertas = artifacts.require("Libertas");
 const LibertasArticles = artifacts.require("LibertasArticles");
 
+
 module.exports = async function(deployer) {
+
+  let ChiTokenContract;
+  let ANCContract;
+  let FaucetContract;
+  let LibertasContract;
+  let LibertasArticlesContract;
 
   deployer.then(function() {
     return deployer.deploy(ChiToken);
@@ -22,6 +30,10 @@ module.exports = async function(deployer) {
   }).then(function(instance) {
     ANCContract = instance;
   }).then(()=>{
+    return deployer.deploy(Faucet, ANCContract.address);
+  }).then((instance)=>{
+    FaucetContract = instance;
+  }).then(()=>{
     return deployer.deploy(Libertas, ANCContract.address);
   }).then((instance)=>{
     LibertasContract = instance;
@@ -30,10 +42,11 @@ module.exports = async function(deployer) {
   }).then((instance)=>{
     LibertasArticlesContract = instance;
   }).then(()=>{
-    console.log('ChiTokenContract\t ', ChiTokenContract.address);
-    console.log('ANCContract\t\t ', ANCContract.address);
-    console.log('LibertasContract\t ', LibertasContract.address);
-    console.log('LibertasArticlesContract ', LibertasArticlesContract.address);
+    console.log('ChiToken\t ', ChiTokenContract.address);
+    console.log('ANCToken\t ', ANCContract.address);
+    console.log('Faucet\t\t ', LibertasContract.address);
+    console.log('Libertas\t ', LibertasContract.address);
+    console.log('LibertasArticles ', LibertasArticlesContract.address);
   });
 
 };

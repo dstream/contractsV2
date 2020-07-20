@@ -6,8 +6,14 @@
     "test": "test"
   },
   "scripts": {
-    "migrate": "rm -rf build && truffle migrate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "npm run migrate:clean & npm run migrate:deploy & npm run migrate:setup",
+    "migrate:clean": "rm -rf build",
+    "migrate:deploy": "truffle migrate",
+    "migrate:setup": "node setupContracts.js",
+    "migrate-prod": "npm run migrate-prod:clean & npm migrate-prod:deploy & npm run migrate-prod:setup",
+    "migrate-prod:clean": "rm -rf build",
+    "migrate-prod:deploy": "truffle migrate --network matic",
+    "migrate-prod:setup": "node setupContracts.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +27,7 @@
   "homepage": "https://github.com/dstream/contractsV2#readme",
   "dependencies": {
     "fs": "0.0.1-security",
-    "truffle-hdwallet-provider": "^1.0.17"
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^1.2.11"
   }
 }
