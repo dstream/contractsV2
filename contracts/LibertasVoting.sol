@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------------------------------------------------//
 
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.11 <0.7.0;
+pragma solidity >=0.6.10 <0.7.0;
 
 library SafeMath {
 
@@ -61,7 +61,7 @@ library SafeMath {
 
 }
 
-interface Libertas {
+interface ILibertas {
     function disableAd(uint256 _adID) external;
     function disableVideo(uint256 _videoID) external;
 }
@@ -71,7 +71,7 @@ contract LibertasVoting {
     using SafeMath for uint256;
 
     address public owner;
-    Libertas public libertas;
+    ILibertas public libertas;
 
     mapping (address => uint256) public addressToStakeLevel;
     uint256[] stakeLevels = [1 ether, 2 ether, 3 ether, 4 ether, 5 ether];
@@ -87,7 +87,7 @@ contract LibertasVoting {
     }
 
     function updateLibertas(address _libertasAddress) public onlyOwner {
-        libertas = Libertas(_libertasAddress);
+        libertas = ILibertas(_libertasAddress);
     }
 
     function updateStakeAmount(uint256 _level, uint256 _amount) public onlyOwner {
