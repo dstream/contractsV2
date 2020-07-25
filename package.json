@@ -6,14 +6,13 @@
     "test": "test"
   },
   "scripts": {
-    "migrate": "npm run migrate:clean & npm run migrate:deploy & npm run migrate:setup",
-    "migrate:clean": "rm -rf build",
+    "clean": "rm -rf build",
+    "migrate": "npm run clean & npm run migrate:deploy & npm run migrate:setup",
     "migrate:deploy": "truffle migrate",
-    "migrate:setup": "node setupContracts.js",
-    "migrate-prod": "npm run migrate-prod:clean & npm migrate-prod:deploy & npm run migrate-prod:setup",
-    "migrate-prod:clean": "rm -rf build",
+    "migrate:setup": "node setupContracts.js dev",
+    "migrate-prod": "npm run clean & npm run migrate-prod:deploy & npm run migrate-prod:setup",
     "migrate-prod:deploy": "truffle migrate --network matic",
-    "migrate-prod:setup": "node setupContracts.js"
+    "migrate-prod:setup": "node setupContracts.js prod"
   },
   "repository": {
     "type": "git",
