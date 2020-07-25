@@ -1,7 +1,7 @@
 const ChiToken = artifacts.require("ChiToken");
 const ANC = artifacts.require("ANC");
 const Faucet = artifacts.require("Faucet");
-const LibertasVoting = artifacts.require("LibertasVoting");
+const LibertasGovernance = artifacts.require("LibertasGovernance");
 const Libertas = artifacts.require("Libertas");
 const LibertasArticles = artifacts.require("LibertasArticles");
 
@@ -10,7 +10,7 @@ module.exports = async function(deployer) {
   let ChiTokenContract;
   let ANCContract;
   let FaucetContract;
-  let LibertasVotingContract;
+  let LibertasGovernanceContract;
   let LibertasContract;
   let LibertasArticlesContract;
 
@@ -40,13 +40,13 @@ module.exports = async function(deployer) {
     FaucetContract = instance;
   })
   .then(()=>{
-    return deployer.deploy(LibertasVoting);
+    return deployer.deploy(LibertasGovernance);
   })
   .then((instance)=>{
-    LibertasVotingContract = instance;
+    LibertasGovernanceContract = instance;
   })
   .then(()=>{
-    return deployer.deploy(Libertas, ANCContract.address);
+    return deployer.deploy(Libertas, ANCContract.address, LibertasGovernanceContract.address);
   })
   .then((instance)=>{
     LibertasContract = instance;
@@ -58,12 +58,12 @@ module.exports = async function(deployer) {
     LibertasArticlesContract = instance;
   })
   .then(()=>{
-    console.log('ChiToken\t ', ChiTokenContract.address);
-    console.log('ANCToken\t ', ANCContract.address);
-    console.log('Faucet\t\t ', Faucet.address);
-    console.log('LibertasVoting\t ', LibertasVotingContract.address);
-    console.log('Libertas\t ', LibertasContract.address);
-    console.log('LibertasArticles ', LibertasArticlesContract.address);
+    console.log(`const chiTokenAddress = '${ChiTokenContract.address}';`);
+    console.log(`const tokenAddress = '${ANCContract.address}';`);
+    console.log(`const faucetAddress = '${Faucet.address}';`);
+    console.log(`const libertasGovernanceAddress = '${LibertasGovernanceContract.address}';`);
+    console.log(`const libertasAddress = '${LibertasContract.address}';`);
+    console.log(`const libertasArticlesAddress = '${LibertasArticlesContract.address}';`);
   });
 
 };

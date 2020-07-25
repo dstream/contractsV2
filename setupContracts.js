@@ -28,7 +28,7 @@ function getContractInstance(name = '', network = networkId){
     let build = require(`./build/contracts/${name}.json`);
     let address = build.networks[network].address;
     let abi = build.abi;
-    return new web3.eth.Contract(abi, address, {gas: 10000000});
+    return new web3.eth.Contract(abi, address, {gas: 8000000});
 }
 
 let ANC = getContractInstance('ANC');
@@ -94,7 +94,7 @@ let LibertasArticles = getContractInstance('LibertasArticles');
 
     await Libertas.methods.createAdvertiser('Adv1').send({from: web3.eth.accounts.wallet[0].address})
     .once('confirmation', function(confirmationNumber, receipt){
-        console.log(`✅ Create 2Advertiser from Acct 1: ${receipt.transactionHash}`)
+        console.log(`✅ Create Advertiser from Acct 1: ${receipt.transactionHash}`)
     })
 
     await Libertas.methods.createAd(

@@ -12,7 +12,7 @@ interface ChiToken {
 
 // File: @openzeppelin/contracts/GSN/Context.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -41,7 +41,7 @@ contract Context {
 
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
@@ -119,7 +119,7 @@ interface IERC20 {
 
 // File: @openzeppelin/contracts/math/SafeMath.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -333,7 +333,7 @@ library Address {
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -645,7 +645,7 @@ contract ERC20 is Context, IERC20 {
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20Capped.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 /**
@@ -688,7 +688,7 @@ abstract contract ERC20Capped is ERC20 {
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20Burnable.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -728,7 +728,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
 
 // File: @openzeppelin/contracts/introspection/IERC165.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
@@ -753,7 +753,7 @@ interface IERC165 {
 
 // File: erc-payable-token/contracts/token/ERC1363/IERC1363.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -844,7 +844,7 @@ interface IERC1363 is IERC20, IERC165 {
 
 // File: erc-payable-token/contracts/token/ERC1363/IERC1363Receiver.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @title IERC1363Receiver Interface
@@ -878,7 +878,7 @@ interface IERC1363Receiver {
 
 // File: erc-payable-token/contracts/token/ERC1363/IERC1363Spender.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @title IERC1363Spender Interface
@@ -1018,7 +1018,7 @@ library ERC165Checker {
 
 // File: @openzeppelin/contracts/introspection/ERC165.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 /**
@@ -1072,7 +1072,7 @@ contract ERC165 is IERC165 {
 
 // File: erc-payable-token/contracts/token/ERC1363/ERC1363.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -1240,7 +1240,7 @@ contract ERC1363 is ERC20, IERC1363, ERC165 {
 
 // File: @openzeppelin/contracts/access/Ownable.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @dev Contract module which provides a basic access control mechanism, where
@@ -1308,7 +1308,7 @@ contract Ownable is Context {
 
 // File: eth-token-recover/contracts/TokenRecover.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -1331,7 +1331,7 @@ contract TokenRecover is Ownable {
 
 // File: @openzeppelin/contracts/utils/EnumerableSet.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @dev Library for managing
@@ -1575,7 +1575,7 @@ library EnumerableSet {
 
 // File: @openzeppelin/contracts/access/AccessControl.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 
@@ -1775,7 +1775,7 @@ abstract contract AccessControl is Context {
 
 // File: contracts/access/Roles.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 
 contract Roles is AccessControl {
@@ -1802,7 +1802,7 @@ contract Roles is AccessControl {
 
 // File: contracts/ANC.sol
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 /**
  * @title ANC

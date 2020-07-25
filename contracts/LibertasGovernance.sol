@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------------------------------------------------//
 
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.10 <0.7.0;
+pragma solidity >=0.6.11 <0.7.0;
 
 library SafeMath {
 
@@ -66,7 +66,7 @@ interface ILibertas {
     function disableVideo(uint256 _videoID) external;
 }
 
-contract LibertasVoting {
+contract LibertasGovernance {
 
     using SafeMath for uint256;
 

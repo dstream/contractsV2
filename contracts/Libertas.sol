@@ -209,8 +209,9 @@ contract Libertas {
     using SafeMath for uint256;
 
     address public owner;
-    Sablier public sablier = Sablier(0xE1D1D66A37C22cCCfbbbbD15Dc77B41c44BF681f);
+    address public governance;
     IERC20 public ANC;
+    Sablier public sablier = Sablier(0x859c5Fd8be133510Fc5c7c15563Fb0a3ccDBb821);
 
     uint256 public videoCount = 0;
     DataStructs.Video[] public videos;
@@ -239,10 +240,24 @@ contract Libertas {
     event SponsorUpdated(uint256 indexed _videoID, uint256 indexed _adID);
     event NewSponsor(uint256 indexed _videoID, uint256 indexed _adID);
 
-    constructor(address _ANCAdress) public {
-        owner = msg.sender;
+    modifier onlyOwner () {
+      require(msg.sender == owner);
+      _;
+    }
+    modifier onlyGovernance () {
+      require(msg.sender == governance);
+      _;
+    }
+    modifier onlyVidOwner (uint256 _vid) {
+      require(msg.sender == videos[_vid].owner);
+      _;
+    }
 
-        ANC = IERC20(_ANCAdress);
+    constructor(address _ancAddress, address _governanceContractAddress) public {
+
+        owner = msg.sender;
+        ANC = IERC20(_ancAddress);
+        governance = address(_governanceContractAddress);
 
         DataStructs.Advertiser memory emptyAdv;
         advertisers.push(emptyAdv);
@@ -254,14 +269,21 @@ contract Libertas {
         videosExtra.push(emptyVideoExtra);
     }
 
-    function updateSablier(address newSablierContract) public {
-        require(msg.sender == owner);
+    function updateSablier(address newSablierContract) public onlyOwner{
         sablier = Sablier(newSablierContract);
     }
-
-    function updateANC(address newTokenContract) public {
-        require(msg.sender == owner);
+    function updateANC(address newTokenContract) public onlyOwner{
         ANC = IERC20(newTokenContract);
+    }
+
+    function updateGovernanceContract(address _newGovernanceContract) public onlyOwner{
+        governance = _newGovernanceContract;
+    }
+    function disableAd(uint256 _adID) public onlyGovernance{
+        ads[_adID].isEnabled = false;
+    }
+    function disableVideo(uint256 _videoID) public onlyGovernance{
+        ads[_videoID].isEnabled = false;
     }
 
     function createVideo(string memory _videoHash, string memory _thumbnailHash, string memory _title, string memory _description, uint256 _duration, uint256 _category)
@@ -302,29 +324,25 @@ contract Libertas {
     }
 
     function updateVideoTitle(uint256 _vid, string memory _title)
-        public
+        public onlyVidOwner(_vid)
     {
-        require(msg.sender == videos[_vid].owner);
         videos[_vid].title = _title;
     }
 
     function updateVideoDescription(uint256 _vid, string memory _description)
-        public
+        public onlyVidOwner(_vid)
     {
-        require(msg.sender == videos[_vid].owner);
         videos[_vid].description = _description;
     }
 
     function updateVideoThumbnail(uint256 _vid, string memory _thumbnailHash)
-        public
+        public onlyVidOwner(_vid)
     {
-        require(msg.sender == videos[_vid].owner);
         videos[_vid].thumbnailHash = _thumbnailHash;
     }
 
     function createAd(string memory _imageHash, string memory _link, uint256 _category, uint256 _amountPerSecond, uint256 _budget )
-        public
-        payable
+        public payable
     {
         require(advertisers[advertiserToId[msg.sender]].isEnabled == true, "Invalid Advertiser");
         require(ANC.balanceOf(msg.sender) >= _budget, "Not Enough Allowance");
@@ -349,24 +367,21 @@ contract Libertas {
     }
 
     function getAdvAdCnt(address  _address)
-        public
-        view
+        public view
         returns (uint256 _adCnt)
     {
         return advertiserToAdIDs[_address].length;
     }
 
     function getAdvAdIDs(address  _address)
-        public
-        view
+        public view
         returns (uint256[] memory _adIDs)
     {
         return advertiserToAdIDs[_address];
     }
 
     function increaseAdBudget(uint256 _adID,uint256 _amt)
-        public
-        payable
+        public payable
     {
         require(ads[_adID].isEnabled == true, "Invalid Ad");
         require(ads[_adID].owner == msg.sender, "Invalid Sender");
@@ -447,8 +462,7 @@ contract Libertas {
     }
 
     function getSponsors(uint256  _videoID)
-        public
-        view
+        public view
         returns (address[] memory)
     {
         require(videos[_videoID].isEnabled == true, "Invalid Video");
@@ -456,10 +470,9 @@ contract Libertas {
     }
 
     function selectSponsor(uint256  _videoID, uint256  _adID)
-        public
+        public onlyVidOwner(_videoID)
     {
         require(videos[_videoID].isEnabled == true, "Invalid Video");
-        require(videos[_videoID].owner == msg.sender, "Invalid Video");
 
         bool validSponsor = false;
         for (uint256 i=0; i < videosExtra[_videoID].availableSponsorsCnt; i=i.add(1)){
@@ -477,24 +490,21 @@ contract Libertas {
     }
 
     function getVideoCnt(address _user)
-        public
-        view
+        public view
         returns (uint256 videoCnt)
     {
         return addressToVideos[_user].length;
     }
 
     function getVideoIDsByAddress(address _user)
-        public
-        view
+        public view
         returns (uint256[] memory videoCnt)
     {
         return addressToVideos[_user];
     }
 
     function getVideoStreamIDs(uint256 _videoID)
-        public
-        view
+        public view
         returns (uint256[] memory streamIDs)
     {
         return videos[_videoID].streams;
@@ -566,8 +576,7 @@ contract Libertas {
     }
 
     function getCreatorDataByVideo(uint256 _videoID)
-        public
-        view
+        public view
         returns (
             string memory name,
             string memory imageHash,
@@ -643,22 +652,22 @@ contract Libertas {
 
     }
 
-    //Testing Function TO BE REMOVED
-    function app(uint256 amt) public {
-        ANC.approve(address(sablier), amt);
-    }
-    //Testing Function TO BE REMOVED
-    function simples(address receiver, uint256 amount, address tokenAddress, uint256 startTime, uint256 endTime) public {
-        sablier.createStream(
-            receiver,
-            amount,
-            tokenAddress,
-            startTime,
-            endTime
-        );
-    }
-    //Testing Function TO BE REMOVED
-    function withdrawAdmin() public {
-        ANC.transfer(owner, ANC.balanceOf(address(this)));
-    }
+    // //Testing Function TO BE REMOVED
+    // function app(uint256 amt) public {
+    //     ANC.approve(address(sablier), amt);
+    // }
+    // //Testing Function TO BE REMOVED
+    // function simples(address receiver, uint256 amount, address tokenAddress, uint256 startTime, uint256 endTime) public {
+    //     sablier.createStream(
+    //         receiver,
+    //         amount,
+    //         tokenAddress,
+    //         startTime,
+    //         endTime
+    //     );
+    // }
+    // //Testing Function TO BE REMOVED
+    // function withdrawAdmin() public {
+    //     ANC.transfer(owner, ANC.balanceOf(address(this)));
+    // }
 }
