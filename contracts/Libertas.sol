@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------------------------------------------------//
 
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.11 <0.7.0;
+pragma solidity >=0.6.12 <0.7.0;
 
 // import "Sablier.sol";
 
@@ -211,7 +211,7 @@ contract Libertas {
     address public owner;
     address public governance;
     IERC20 public ANC;
-    Sablier public sablier = Sablier(0x859c5Fd8be133510Fc5c7c15563Fb0a3ccDBb821);
+    Sablier public sablier = Sablier(0x7Aa49c34416ff387e7EFA4D9dde774EAA49879C0);
 
     uint256 public videoCount = 0;
     DataStructs.Video[] public videos;

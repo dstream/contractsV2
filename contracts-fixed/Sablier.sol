@@ -4,7 +4,7 @@
 
 // File: @openzeppelin/upgrades/contracts/Initializable.sol
 
-pragma solidity >=0.4.24 <0.6.0;
+pragma solidity >=0.5.17 <0.6.0;
 
 
 /**

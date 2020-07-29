@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------------------------------------------------//
 
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.11 <0.7.0;
+pragma solidity >=0.6.12 <0.7.0;
 
 library SafeMath {
 
@@ -66,11 +66,12 @@ library DataStructs {
 
     struct Article {
         uint256 ID;
-        address controller;
+        address payable controller;
         uint256 category;
 
         bool active;
         bool published;
+        string title;
         string dataHash;
         uint256 lastUpdated;
 
@@ -78,6 +79,7 @@ library DataStructs {
         uint256 cost;
         uint256 earnings;
     }
+
 }
 
 contract LibertasArticles {
@@ -96,9 +98,11 @@ contract LibertasArticles {
     DataStructs.Article[] public Articles;
 
     event NewArticle(address indexed _controller, uint256 indexed _articleID);
+    event PaidForArticle(address indexed _user, uint256 indexed _articleID);
+    event ArticleUpdate(uint256 indexed _articleID);
 
     modifier onlyOwner () {
-      require(msg.sender == owner);
+      require(msg.sender == owner, "Restricted Access");
       _;
     }
 
@@ -114,6 +118,7 @@ contract LibertasArticles {
             active : false,
             category : 0,
             published : false,
+            title:'',
             dataHash : '',
             lastUpdated: 0,
             isPaid : false,
@@ -133,25 +138,20 @@ contract LibertasArticles {
     function setCostMultiplier(uint256 _costMultiplier)
         public onlyOwner
     {
-        require(costMultiplier != _costMultiplier);
-        require(_costMultiplier >= 0);
+        require(costMultiplier != _costMultiplier, "Same State");
+        require(_costMultiplier >= 0, "Cost Multipler is Negative");
         costMultiplier = _costMultiplier;
     }
 
     // end owner functions
 
 
-    function getStringLength(string memory _s) pure internal returns (uint length) {
+    function getStringLength(string memory _s) internal pure returns (uint length) {
         bytes memory bs = bytes(_s);
         return bs.length;
     }
 
-    /*
-    function calc(len = 1) {
-       return 100*((10**18)/(len*len))
-}
-    */
-    function calcCost(uint256 _length) view public returns (uint256 cost){
+    function calcCost(uint256 _length) public view returns (uint256 cost){
         if(_length>10){
              return 0;
         }
@@ -161,7 +161,7 @@ contract LibertasArticles {
     }
 
     function claimPseudonym(string memory _name)
-        payable public
+        public payable
     {
         require(msg.value == calcCost(getStringLength(_name)), "Insufficient Amount");
         require(pseudonymTaken[_name] == false, "Pseudonym Taken");
@@ -171,7 +171,7 @@ contract LibertasArticles {
 
     }
 
-    function createArticle(bool _published, string memory _dataHash, bool _isPaid, uint256 _cost, uint256 _category)
+    function createArticle(bool _published, string memory _title, string memory _dataHash, bool _isPaid, uint256 _cost, uint256 _category)
         public
     {
 
@@ -183,8 +183,9 @@ contract LibertasArticles {
             active : true,
             category : _category,
             published : _published,
+            title: _title,
             dataHash : _dataHash,
-            lastUpdated: now,
+            lastUpdated: block.timestamp,
             isPaid : _isPaid,
             cost : _cost,
             earnings : 0
@@ -193,6 +194,33 @@ contract LibertasArticles {
         addressToArticleIDs[msg.sender].push(newArticleID);
         lastArticleID = newArticleID;
     }
+
+    function payForArticle(address payable _forAddress, uint256 _articleID)
+        public payable
+    {
+        require(Articles[_articleID].isPaid == true, "Article is not Paid");
+        require(Articles[_articleID].cost == msg.value, "Invalid Article Cost");
+        Articles[_articleID].earnings = Articles[_articleID].earnings.add(msg.value);
+        Articles[_articleID].controller.transfer(msg.value);
+        emit PaidForArticle(_forAddress, _articleID);
+    }
+
+    function updateArticleData(uint256 _articleID, string memory _title, string memory _dataHash)
+        public
+    {
+        require(Articles[_articleID].controller == msg.sender, "Only Article Owner");
+        Articles[_articleID].title = _title;
+        Articles[_articleID].dataHash = _dataHash;
+        emit ArticleUpdate(_articleID);
+    }
+
+    function toggleArticleVisibility(uint256 _articleID)
+        public
+    {
+        require(Articles[_articleID].controller == msg.sender, "Only Article Owner");
+        Articles[_articleID].published = !Articles[_articleID].published;
+    }
+
 
     function getArticleIDs(address _address)
         public view
