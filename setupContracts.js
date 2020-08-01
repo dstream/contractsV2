@@ -154,6 +154,19 @@ let LibertasArticles = getContractInstance('LibertasArticles');
         console.log(`✅ Select Sponsor for Video 2 from Acct 3: ${receipt.transactionHash}`)
     })
 
+    await LibertasArticles.methods.createArticle(
+        true, "Libertas - Introduction" ,"QmV69b2my5J1AFxqgRbevLc8gswjUmZcqC9CjcgnoKNspm", false, "0", "1"
+    ).send({from: web3.eth.accounts.wallet[0].address})
+    .once('confirmation', function(confirmationNumber, receipt){
+        console.log(`✅ Create a new Article: ${receipt.transactionHash}`)
+    })
+
+    await LibertasArticles.methods.createArticleAnonymous(
+        "Libertas - Introduction" ,"QmV69b2my5J1AFxqgRbevLc8gswjUmZcqC9CjcgnoKNspm","1"
+    ).send({from: web3.eth.accounts.wallet[1].address})
+    .once('confirmation', function(confirmationNumber, receipt){
+        console.log(`✅ Create a new Anonymous Article: ${receipt.transactionHash}`)
+    })
 
 
     await sleep(10000)

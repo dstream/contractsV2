@@ -99,7 +99,8 @@ contract LibertasArticles {
 
     event NewArticle(address indexed _controller, uint256 indexed _articleID);
     event PaidForArticle(address indexed _user, uint256 indexed _articleID);
-    event ArticleUpdate(uint256 indexed _articleID);
+    event ArticleUpdate(uint256 indexed _articleID, string _title,  string _newHash);
+    event GotATip(uint256 indexed _articleID, address indexed _controller, uint256 _amount);
 
     modifier onlyOwner () {
       require(msg.sender == owner, "Restricted Access");
@@ -195,6 +196,30 @@ contract LibertasArticles {
         lastArticleID = newArticleID;
     }
 
+    function createArticleAnonymous(string memory _title, string memory _dataHash, uint256 _category)
+        public
+    {
+
+        uint256 newArticleID = lastArticleID.add(1);
+
+        Articles.push( DataStructs.Article({
+            ID: newArticleID,
+            controller : address(0x0),
+            active : true,
+            category : _category,
+            published : true,
+            title: _title,
+            dataHash : _dataHash,
+            lastUpdated: block.timestamp,
+            isPaid : false,
+            cost : 0,
+            earnings : 0
+        }));
+
+        addressToArticleIDs[address(0x0)].push(newArticleID);
+        lastArticleID = newArticleID;
+    }
+
     function payForArticle(address payable _forAddress, uint256 _articleID)
         public payable
     {
@@ -205,13 +230,21 @@ contract LibertasArticles {
         emit PaidForArticle(_forAddress, _articleID);
     }
 
+    function tipArticle(uint256 _articleID)
+        public payable
+    {
+        Articles[_articleID].controller.transfer(msg.value);
+        emit GotATip(_articleID, Articles[_articleID].controller, _articleID);
+    }
+
     function updateArticleData(uint256 _articleID, string memory _title, string memory _dataHash)
         public
     {
         require(Articles[_articleID].controller == msg.sender, "Only Article Owner");
         Articles[_articleID].title = _title;
         Articles[_articleID].dataHash = _dataHash;
-        emit ArticleUpdate(_articleID);
+        Articles[_articleID].lastUpdated = block.timestamp;
+        emit ArticleUpdate(_articleID, _title, _dataHash);
     }
 
     function toggleArticleVisibility(uint256 _articleID)

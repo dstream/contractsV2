@@ -302,7 +302,7 @@ contract Libertas {
             title : _title,
             description : _description,
             duration: _duration,
-            uploadtime: now,
+            uploadtime: block.timestamp,
             category : _category,
             streams : tempStreams
         }));
@@ -359,7 +359,7 @@ contract Libertas {
             category : _category,
             amountPerSecond : _amountPerSecond,
             budget : _budget,
-            time: now
+            time: block.timestamp
         }));
 
         advertiserToAdIDs[msg.sender].push(newAdID);
@@ -525,8 +525,8 @@ contract Libertas {
                     videos[_videoID].owner,
                     adCost,
                     address(ANC),
-                    now.add(15 seconds),
-                    now.add(15 seconds).add(videos[_videoID].duration)
+                    block.timestamp.add(15 seconds),
+                    block.timestamp.add(15 seconds).add(videos[_videoID].duration)
                 );
                 require(streamID != 0, "Streaming money error.");
                 ads[videosExtra[_videoID].activeAdID].budget  = (ads[videosExtra[_videoID].activeAdID].budget).sub(adCost);
@@ -639,8 +639,8 @@ contract Libertas {
                 _streamerAddress,
                 liveStreamCost,
                 address(ANC),
-                now.add(15 seconds),
-                now.add(15 seconds).add(liveStreams[_streamerAddress].duration)
+                block.timestamp.add(15 seconds),
+                block.timestamp.add(15 seconds).add(liveStreams[_streamerAddress].duration)
             );
             liveStreams[_streamerAddress].streamIDs.push(streamID);
 
